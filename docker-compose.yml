@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  # 1. Local CPU Development Service (Default for macOS / edge testing)
+  cpu-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - TARGETPLATFORM=linux/arm64
+    container_name: kv_eviction_cpu
+    volumes:
+      - .:/app
+    environment:
+      - DEVICE=cpu
+      - MODEL_ID=MaziyarPanahi/Meta-Llama-3-8B-Instruct-AWQ
+      - PYTHONUNBUFFERED=1
+    command: python -u -c "import torch; print('CPU container verified. PyTorch version:', torch.__version__)"
+
+  # 2. CUDA GPU Production/Workstation Service (For RTX 2080 Ti / Linux Servers)
+  gpu-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - TARGETPLATFORM=linux/amd64
+    container_name: kv_eviction_gpu
+    volumes:
+      - .:/app
+    environment:
+      - DEVICE=cuda
+      - MODEL_ID=MaziyarPanahi/Meta-Llama-3-8B-Instruct-AWQ
+      - PYTHONUNBUFFERED=1
+    # Enable NVIDIA GPU access inside the container
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command: python -u -c "import torch; print('CUDA container verified. GPU available:', torch.cuda.is_available())"

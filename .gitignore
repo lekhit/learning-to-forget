@@ -1,0 +1,16 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+
+# Large datasets & generated artifacts
+*.h5
+experiments/*.h5
+
+# Local IDE configuration
+.vscode/
+.idea/
