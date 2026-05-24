@@ -309,6 +309,21 @@ def main():
     print(f"Tokens Generated: {num_new_tokens}")
     print(f"Generation Throughput: {num_new_tokens / (duration + 1e-8):.2f} tokens/second (TPS)")
     print("="*80)
+    
+    # 4. Save results to dedicated results/ folder
+    results_dir = "results"
+    os.makedirs(results_dir, exist_ok=True)
+    results_file = os.path.join(results_dir, "experiment_3_results.md")
+    
+    with open(results_file, "w") as f:
+        f.write("# Experiment 3: In-Place Eviction Generation Results\n\n")
+        f.write(f"**Device Used:** {device}\n\n")
+        f.write(f"### Generated Text Output:\n```\n{response}\n```\n\n")
+        f.write(f"### Performance Metrics:\n")
+        f.write(f"- **Generation Latency:** {duration:.2f} seconds\n")
+        f.write(f"- **Tokens Generated:** {num_new_tokens}\n")
+        f.write(f"- **Throughput (TPS):** {num_new_tokens / (duration + 1e-8):.2f} tokens/second\n")
+    print(f"Saved generation benchmark results to: {results_file}")
 
 if __name__ == "__main__":
     main()

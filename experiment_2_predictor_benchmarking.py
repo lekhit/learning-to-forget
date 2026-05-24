@@ -141,12 +141,12 @@ def main():
     device = "cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")
     print(f"Using device for benchmarking: {device}")
     
-    h5_path = "experiments/llama3_attention_traces.h5"
+    h5_path = "results/llama3_attention_traces.h5"
     if not os.path.exists(h5_path):
         print(f"Error: {h5_path} not found. Please run Experiment 1 first to generate training traces.")
         # If no trace exists, create a dummy trace for testing robustness
         print("Constructing temporary dummy traces to allow verification of Experiment 2 script...")
-        os.makedirs("experiments", exist_ok=True)
+        os.makedirs("results", exist_ok=True)
         # Determine dummy dim based on device
         dummy_dim = 260 if device == "cuda" else 132
         with h5py.File(h5_path, "w") as h5f:
@@ -189,6 +189,19 @@ def main():
     for name, metrics in results.items():
         print(f"| {name} | {metrics['f1']:.4f} | {metrics['precision']:.4f} | {metrics['recall']:.4f} | {metrics['params']} | {metrics['train_time']:.2f} | {metrics['inf_latency']:.4f} |")
     print("="*80)
+    
+    # 8. Save results to dedicated results/ folder
+    results_dir = "results"
+    os.makedirs(results_dir, exist_ok=True)
+    results_file = os.path.join(results_dir, "experiment_2_results.md")
+    
+    with open(results_file, "w") as f:
+        f.write("# Experiment 2: Predictor Architecture Benchmarking Results\n\n")
+        f.write(f"| Architecture | F1 Score | Precision | Recall | Parameters | Train Time (s) | Latency (ms / 1k tokens) |\n")
+        f.write(f"|---|---|---|---|---|---|---|\n")
+        for name, metrics in results.items():
+            f.write(f"| {name} | {metrics['f1']:.4f} | {metrics['precision']:.4f} | {metrics['recall']:.4f} | {metrics['params']} | {metrics['train_time']:.2f} | {metrics['inf_latency']:.4f} |\n")
+    print(f"Saved benchmark comparative results to: {results_file}")
     
 if __name__ == "__main__":
     main()

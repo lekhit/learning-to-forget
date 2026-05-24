@@ -10,6 +10,7 @@ __pycache__/
 # Large datasets & generated artifacts
 *.h5
 experiments/*.h5
+results/*.h5
 
 # Local IDE configuration
 .vscode/

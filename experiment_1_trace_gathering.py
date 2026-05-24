@@ -38,7 +38,7 @@ def main():
     device, model_id, is_quantized = detect_environment()
     
     # 1. Output Files
-    output_dir = "experiments"
+    output_dir = "results"
     os.makedirs(output_dir, exist_ok=True)
     output_file = os.path.join(output_dir, "llama3_attention_traces.h5")
     
